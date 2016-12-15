@@ -28,7 +28,39 @@ Additionally, it can also intelligently generate images thumbnails for displayin
 
 2. Image Captions: Capture closest captions with confidence ratio to the given image.
 
+## Python code integration with Cognitive Services
 
+```
+@app.route("/analyzeImage", methods = ['POST'])
+def callCognitiveSvcs():
+    u = request.form['imgUrl']
+    k = request.form['key']
+    
+    print('image url is: ' + u)
+    
+    # pass image url and computer vision api key
+    data = analyzeImage.getImageAnalysis(u, k)
+
+    # convert the response to a string and then to a json object
+    resp = json.loads(data.decode())
+  
+    # display tags
+    print('image tags are:')
+    imgTags = resp['description']['tags']
+    for item in resp['description']['tags']:
+        print(item + '\t')
+    print('---------------')
+
+    # display captions
+    print('image captions are:')
+    imgCaptions = resp['description']['captions']
+    for item in resp['description']['captions']:
+        print(item['text'] + '\t')
+    print('---------------')
+    
+    return render_template('index.html', tags = imgTags, captions = imgCaptions)
+
+```
 
 References:
 + Read more about Cognitive Services [here](https://www.microsoft.com/cognitive-services/)
